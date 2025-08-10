@@ -1,0 +1,32 @@
+# Detector State Machine (pseudocode)
+
+state := QUIET
+score := 0
+
+loop every 5s:
+  feats := features_latest[pool]
+  vc  := (vc_ratio <= θ_vc) and intertrade_ms_slope > 0 and sigma15 decreasing
+  ofs := (abs(cvd_slope_1h_decile) <= θ_ofs) and (swap_cv_15m <= θ_cv) and (alternation_idx >= θ_alt)
+  lt  := (depth_1p0 <= θ_lt) and (depth_cont >= θ_cont) and (lp_top10 <= θ_lp)
+  wc_bool, wc_score := compute_wc()
+  rq  := watchers_proxy_slope > 0 and swaps_min_z <= θ_swz
+  cr_ok := regime_cr >= θ_cr_min
+
+  coil = vc and ofs and lt and wc_bool and rq and cr_ok
+  score = weighted_score(vc, ofs, lt, wc_score, rq)
+
+  switch state:
+    case QUIET:
+      if coil: state := COIL_FORMING
+    case COIL_FORMING:
+      if coil and score >= θ_arm: state := ARMED
+      elif not coil: state := QUIET
+    case ARMED:
+      if coil and score >= θ_enter:
+          enter_position()
+          state := ENTER
+      elif not coil:
+          state := QUIET
+    case ENTER:
+      manage_position()
+      if exit_condition(): state := QUIET

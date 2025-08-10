@@ -1,0 +1,34 @@
+{
+  "SCF": {
+    "vc_ratio_max": 0.6,
+    "ofs_cvd_decile_max": 0.15,
+    "ofs_swap_cv_max": 0.35,
+    "ofs_alt_idx_min": 0.55,
+    "lt_depth1_max_sol": 0.8,
+    "lt_cont_min": 0.7,
+    "lp_top10_share_max": 0.65,
+    "wc_quality_min": 0.65,
+    "wc_arrivals_per_min_min": 3,
+    "wc_gini_dir_delta_max": -0.05,
+    "wc_cohort_jaccard_min": 0.12,
+    "rq_watchers_slope_min": 0.0,
+    "rq_swaps_zscore_max": 0.5,
+    "time_stop_min": 120
+  },
+  "risk": {
+    "pool_min_age_min": 30,
+    "authority_required": [
+      "no_mint",
+      "no_freeze",
+      "no_tax_flip"
+    ],
+    "max_concurrent": 10,
+    "max_per_trade_sol": 0.1
+  },
+  "exec": {
+    "slippage_bps": 500,
+    "tif_sec": 30,
+    "slice_if_depth1_lt_sol": 0.6,
+    "route": "jupiter"
+  }
+}

@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    container_name: scf_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: scf
+      POSTGRES_PASSWORD: scf
+      POSTGRES_DB: scf
+    ports:
+      - "5432:5432"
+    volumes:
+      - scf_pgdata:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/10-init.sql:ro
+
+volumes:
+  scf_pgdata:
