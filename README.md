@@ -41,6 +41,8 @@ python app\scf_runner.py --full --mode paper
 - Polling: `SCF_DETECTOR_POLL_SEC`, `SCF_EXECUTOR_POLL_SEC`
 - Jupiter (later for live): `JUPITER_BASE`
 - Programs: `RAYDIUM_*`, `ORCA_*`
+- Exit engine: `SCF_TP_MULT`, `SCF_SL_MULT`, `SCF_EXIT_POLL_SEC` (plus optional `SCF_TP_PARTIAL`, `SCF_SL_PARTIAL`)
+- Live executor: `SCF_TRADE_SIZE_SOL`, `SCF_SLIPPAGE_BPS`
 
 Use `.env.example` as a safe template. **Never commit `.env`.**
 
@@ -79,6 +81,7 @@ app/
   detector.py
   executor_paper.py
   executor_live.py
+  exit_worker.py
   scf_runner.py
 sql/
   init.sql

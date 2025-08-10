@@ -232,7 +232,7 @@ def workers_layout(project_root: str, exec_mode: str) -> List["WorkerSpec"]:
     exec_mode ∈ {'paper','live','none'}
     """
     orch = Orchestrator(project_root)
-    # Order: ingest -> resolve -> parse -> features -> detector -> executor
+    # Order: ingest -> resolve -> parse -> features -> detector -> executor -> exit
     orch.add_worker("ingest_queue",     os.path.join(project_root, "app", "ingest_queue.py"))
     orch.add_worker("worker_resolve",   os.path.join(project_root, "app", "worker_resolve.py"))
     orch.add_worker("parser_swap",      os.path.join(project_root, "app", "parser_swap.py"))
@@ -256,6 +256,9 @@ def workers_layout(project_root: str, exec_mode: str) -> List["WorkerSpec"]:
         pass
     else:
         raise SystemExit(f"Unknown exec mode: {exec_mode} (expected paper|live|none)")
+
+    # always include exit engine (TP/SL)
+    orch.add_worker("exit_worker", os.path.join(project_root, "app", "exit_worker.py"))
 
     return orch.workers
 

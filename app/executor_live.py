@@ -7,13 +7,18 @@ import os, asyncio, json, logging, uuid
 import asyncpg
 from dotenv import load_dotenv
 
-load_dotenv()
-logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
+# Load .env early
+ROOT = os.path.dirname(os.path.dirname(__file__))
+load_dotenv(os.path.join(ROOT, ".env"))
 
 DB_URL    = os.getenv("DB_URL")
 POLL_SEC  = float(os.getenv("SCF_EXECUTOR_POLL_SEC", "2"))
 WINDOW    = os.getenv("SCF_EXECUTOR_WINDOW_MIN", "10")
 BATCH     = int(os.getenv("SCF_EXECUTOR_BATCH", "200"))
+
+# Live execution defaults (configurable)
+DEFAULT_SIZE_SOL      = float(os.getenv("SCF_TRADE_SIZE_SOL", "0.05"))
+DEFAULT_SLIPPAGE_BPS  = int(os.getenv("SCF_SLIPPAGE_BPS", "300"))
 
 if not DB_URL:
     raise SystemExit("DB_URL missing in .env")
@@ -56,13 +61,13 @@ async def process_batch(conn: asyncpg.Connection) -> int:
         if await conn.fetchval(EXISTS_SQL, sig_id):
             continue
 
-        # TODO: fetch market price and compute size/route; sign/send TX; wait for confirmation
+        # Fetch market price and compute size/route; sign/send TX; wait for confirmation.
         # For now, this is a no-risk stub that records the intent.
         token       = "SOL"
-        size_sol    = 0.01           # example: small live allocation; change when you wire risk sizing
-        entry_px    = 1.0            # TODO: replace with real fetched price
-        slippage    = 50             # bps, example placeholder
-        tx_sig      = None           # TODO: set to actual chain signature after send
+        size_sol    = DEFAULT_SIZE_SOL         # configurable live allocation (SOL)
+        entry_px    = 1.0                       # TODO: replace with real fetched price
+        slippage    = DEFAULT_SLIPPAGE_BPS      # bps, configurable
+        tx_sig      = None                      # TODO: set to actual chain signature after send
         state       = "open"
         entry_price = entry_px
         meta        = {"signal_id": sig_id, "source": "detector_signal", "mode": "live_stub"}
